@@ -6,6 +6,7 @@
 package de.blinkt.openvpn.core;
 
 import android.Manifest.permission;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -33,6 +34,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
+import com.vasilkoff.easyvpnfree.App;
 import com.vasilkoff.easyvpnfree.BuildConfig;
 
 
@@ -148,47 +153,41 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     private void showNotification(final String msg, String tickerText, boolean lowpriority, long when, ConnectionStatus status) {
-        String ns = Context.NOTIFICATION_SERVICE;
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 
 
-        //int icon = getIconByConnectionStatus(status);
-        int icon = R.drawable.ic_app_notif;
-        android.app.Notification.Builder nbuilder = new Notification.Builder(this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.CHANNEL_ID);
+
 
         if (mProfile != null)
-            nbuilder.setContentTitle(getString(R.string.notification_title, mProfile.mName));
+            builder.setContentTitle(getString(R.string.notification_title, mProfile.mName));
         else
-            nbuilder.setContentTitle(getString(R.string.notifcation_title_notconnect));
+            builder.setContentTitle(getString(R.string.notifcation_title_notconnect));
 
-        nbuilder.setContentText(msg);
-        nbuilder.setOnlyAlertOnce(true);
-        nbuilder.setOngoing(true);
-        nbuilder.setContentIntent(getLogPendingIntent());
-        nbuilder.setSmallIcon(icon);
+        builder.setSmallIcon(R.drawable.ic_app_notif);
+        builder.setContentText(msg);
+        builder.setOnlyAlertOnce(true);
+        builder.setOngoing(true);
+        builder.setContentIntent(getLogPendingIntent());
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
 
 
         if (when != 0)
-            nbuilder.setWhen(when);
+            builder.setWhen(when);
 
 
-        // Try to set the priority available since API 16 (Jellybean)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-            jbNotificationExtras(lowpriority, nbuilder);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            lpNotificationExtras(nbuilder);
+        builder.setCategory(Notification.CATEGORY_SERVICE);
+        builder.setLocalOnly(true);
 
         if (tickerText != null && !tickerText.equals(""))
-            nbuilder.setTicker(tickerText);
-
-        @SuppressWarnings("deprecation")
-        Notification notification = nbuilder.getNotification();
+            builder.setTicker(tickerText);
 
 
-        mNotificationManager.notify(OPENVPN_STATUS, notification);
-        startForeground(OPENVPN_STATUS, notification);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(1, builder.build());
+        startForeground(OPENVPN_STATUS, builder.getNotification());
+
 
         // Check if running on a TV
         if (runningOnAndroidTV() && !lowpriority)
@@ -206,12 +205,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             });
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void lpNotificationExtras(Notification.Builder nbuilder) {
-        nbuilder.setCategory(Notification.CATEGORY_SERVICE);
-        nbuilder.setLocalOnly(true);
 
-    }
 
     private boolean runningOnAndroidTV() {
         UiModeManager uiModeManager = (UiModeManager) getSystemService(UI_MODE_SERVICE);
@@ -240,50 +234,50 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         }
     }*/
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void jbNotificationExtras(boolean lowpriority,
-                                      android.app.Notification.Builder nbuilder) {
-        try {
-            if (lowpriority) {
-                Method setpriority = nbuilder.getClass().getMethod("setPriority", int.class);
-                // PRIORITY_MIN == -2
-                setpriority.invoke(nbuilder, -2);
-
-                Method setUsesChronometer = nbuilder.getClass().getMethod("setUsesChronometer", boolean.class);
-                setUsesChronometer.invoke(nbuilder, true);
-
-            }
-
-            Intent disconnectVPN = new Intent(this, OpenVPNService.class);
-            disconnectVPN.setAction(DISCONNECT_VPN);
-            PendingIntent disconnectPendingIntent = PendingIntent.getService(
-                    this, 0, disconnectVPN, 0);
-
-            nbuilder.addAction(R.drawable.ic_menu_close_clear_cancel,
-                    getString(R.string.cancel_connection), disconnectPendingIntent);
-
-            Intent pauseVPN = new Intent(this, OpenVPNService.class);
-            if (mDeviceStateReceiver == null || !mDeviceStateReceiver.isUserPaused()) {
-                pauseVPN.setAction(PAUSE_VPN);
-                PendingIntent pauseVPNPending = PendingIntent.getService(this, 0, pauseVPN, 0);
-                nbuilder.addAction(R.drawable.ic_menu_pause,
-                        getString(R.string.pauseVPN), pauseVPNPending);
-
-            } else {
-                pauseVPN.setAction(RESUME_VPN);
-                PendingIntent resumeVPNPending = PendingIntent.getService(this, 0, pauseVPN, 0);
-                nbuilder.addAction(R.drawable.ic_menu_play,
-                        getString(R.string.resumevpn), resumeVPNPending);
-            }
-
-
-            //ignore exception
-        } catch (NoSuchMethodException | IllegalArgumentException |
-                InvocationTargetException | IllegalAccessException e) {
-            VpnStatus.logException(e);
-        }
-
-    }
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    private void jbNotificationExtras(boolean lowpriority,
+//                                      Builder nbuilder) {
+//        try {
+//            if (lowpriority) {
+//                Method setpriority = nbuilder.getClass().getMethod("setPriority", int.class);
+//                // PRIORITY_MIN == -2
+//                setpriority.invoke(nbuilder, -2);
+//
+//                Method setUsesChronometer = nbuilder.getClass().getMethod("setUsesChronometer", boolean.class);
+//                setUsesChronometer.invoke(nbuilder, true);
+//
+//            }
+//
+//            Intent disconnectVPN = new Intent(this, OpenVPNService.class);
+//            disconnectVPN.setAction(DISCONNECT_VPN);
+//            PendingIntent disconnectPendingIntent = PendingIntent.getService(
+//                    this, 0, disconnectVPN, 0);
+//
+//            nbuilder.addAction(R.drawable.ic_menu_close_clear_cancel,
+//                    getString(R.string.cancel_connection), disconnectPendingIntent);
+//
+//            Intent pauseVPN = new Intent(this, OpenVPNService.class);
+//            if (mDeviceStateReceiver == null || !mDeviceStateReceiver.isUserPaused()) {
+//                pauseVPN.setAction(PAUSE_VPN);
+//                PendingIntent pauseVPNPending = PendingIntent.getService(this, 0, pauseVPN, 0);
+//                nbuilder.addAction(R.drawable.ic_menu_pause,
+//                        getString(R.string.pauseVPN), pauseVPNPending);
+//
+//            } else {
+//                pauseVPN.setAction(RESUME_VPN);
+//                PendingIntent resumeVPNPending = PendingIntent.getService(this, 0, pauseVPN, 0);
+//                nbuilder.addAction(R.drawable.ic_menu_play,
+//                        getString(R.string.resumevpn), resumeVPNPending);
+//            }
+//
+//
+//            //ignore exception
+//        } catch (NoSuchMethodException | IllegalArgumentException |
+//                InvocationTargetException | IllegalAccessException e) {
+//            VpnStatus.logException(e);
+//        }
+//
+//    }
 
     PendingIntent getLogPendingIntent() {
         // Let the configure Button show the Log

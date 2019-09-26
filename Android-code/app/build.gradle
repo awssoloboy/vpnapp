@@ -1,88 +1,66 @@
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-    }
-}
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
+    mavenCentral()
+    google()
+    maven { url 'https://jitpack.io' }
+    jcenter()
 }
 
-
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+
 
     defaultConfig {
-        applicationId "com.vasilkoff.easyvpnfree"
-        minSdkVersion 17
-        targetSdkVersion 24
-        versionCode 50
-        versionName "1.6"
+        applicationId "tele.turbo.vpn"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
         setProperty("archivesBaseName", "easyvpnfree-$versionName-$versionCode")
     }
+
+
+
 
     lintOptions {
         disable 'MissingTranslation'
     }
 
-    productFlavors {
-        free {
-            applicationId "com.vasilkoff.easyvpnfree"
-            resValue "string", "app_name", "Easy VPN Free"
-            resValue "string", "notification_title", "Easy VPN Free - %s"
-        }
-
-        pro {
-            applicationId "com.vasilkoff.easyvpn"
-            resValue "string", "app_name", "Easy VPN"
-            resValue "string", "notification_title", "Easy VPN - %s"
-        }
-
-        underground {
-            applicationId "com.vasilkoff.easyvpnunderground"
-            resValue "string", "app_name", "Easy VPN"
-            resValue "string", "notification_title", "Easy VPN - %s"
-        }
-    }
 
     buildTypes {
         release {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            ndk {
-//              //abiFilters "armeabi" "x86"
-//                abiFilters "armeabi-v7a", "armeabi", "arm64-v8a" // includes ARM SO files only, so no x86 SO file
-//            }
+            ndk {
+                abiFilters "armeabi-v7a", "armeabi", "arm64-v8a", "x86","armeabi"
+            }
         }
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 }
 
-
-
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:support-v4:24.2.1'
-    compile 'com.android.support:design:24.2.1'
-    compile 'com.android.support:recyclerview-v7:24.2.1'
-    compile 'com.android.support:cardview-v7:24.2.1'
+     implementation fileTree(dir: 'libs', include: ['*.jar'])
+     implementation 'androidx.appcompat:appcompat:1.1.0'
+     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+     implementation 'com.google.android.material:material:1.0.0'
+     implementation 'androidx.recyclerview:recyclerview:1.0.0'
+     implementation 'androidx.cardview:cardview:1.0.0'
 
-    compile 'com.daimajia.numberprogressbar:library:1.2@aar'
-    compile 'com.amitshekhar.android:android-networking:0.2.0'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'org.mapsforge:mapsforge-map-android:0.6.1'
-    compile 'com.caverock:androidsvg:1.2.2-beta-1'
-    testCompile 'junit:junit:4.12'
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
-        transitive = true
-    }
-    compile 'com.google.android.gms:play-services-analytics:10.0.1'
+    implementation 'com.daimajia.numberprogressbar:library:1.2@aar'
+    implementation 'com.amitshekhar.android:android-networking:0.2.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'org.mapsforge:mapsforge-map-android:0.6.1'
+    implementation 'com.caverock:androidsvg:1.2.2-beta-1'
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.github.AppIntro:AppIntro:5.1.0'
+
+
 }

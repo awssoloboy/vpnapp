@@ -6,11 +6,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 
 
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,10 +22,6 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.crashlytics.android.answers.Answers;
-
-import com.crashlytics.android.answers.CustomEvent;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -43,6 +37,9 @@ import com.vasilkoff.easyvpnfree.util.LoadData;
 import com.vasilkoff.easyvpnfree.util.PropertiesService;
 import com.vasilkoff.easyvpnfree.util.map.MapCreator;
 import com.vasilkoff.easyvpnfree.util.map.MyMarker;
+import com.vasilkoff.easyvpnfree.vpn.AndroidUtility;
+import com.vasilkoff.easyvpnfree.vpn.BaseApiController;
+import com.vasilkoff.easyvpnfree.vpn.VpnServer;
 
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -86,9 +83,6 @@ public class HomeActivity extends BaseActivity {
         countryList = dbHelper.getUniqueCountries();
 
         long totalServ = dbHelper.getCount();
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logCustom(new CustomEvent("Total servers")
-                .putCustomAttribute("Total servers", totalServ));
 
         String totalServers = String.format(getResources().getString(R.string.total_servers), totalServ);
         ((TextView) findViewById(R.id.homeTotalServers)).setText(totalServers);
@@ -153,18 +147,39 @@ public class HomeActivity extends BaseActivity {
     public void homeOnClick(View view) {
         switch (view.getId()) {
             case R.id.homeBtnChooseCountry:
-                sendTouchButton("homeBtnChooseCountry");
                 chooseCountry();
                 break;
             case R.id.homeBtnRandomConnection:
-                sendTouchButton("homeBtnRandomConnection");
-                Server randomServer = getRandomServer();
-                if (randomServer != null) {
-                    newConnecting(randomServer, true, true);
-                } else {
-                    String randomError = String.format(getResources().getString(R.string.error_random_country), PropertiesService.getSelectedCountry());
-                    Toast.makeText(this, randomError, Toast.LENGTH_LONG).show();
-                }
+
+                BaseApiController.getInstance().getRandomServers(new BaseApiController.ApiCallBack() {
+                    @Override
+                    public void didReceiveData(int type, Object... object) {
+                        if(object == null){
+                            return;
+                        }
+                        List<VpnServer> vpnServerList = (List<VpnServer>)object[0];
+                        if(!vpnServerList.isEmpty()){
+                            Server randomServer =
+                                    AndroidUtility.fromServerToVpnServer(vpnServerList.get(0));
+
+                                if (randomServer != null) {
+                                    newConnecting(randomServer, true, true);
+                                } else {
+                                    String randomError = String.format(getResources().getString(R.string.error_random_country), PropertiesService.getSelectedCountry());
+                                    Toast.makeText(HomeActivity.this, randomError, Toast.LENGTH_LONG).show();
+                                }
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(String error_message) {
+
+                    }
+                });
+
+
                 break;
         }
 

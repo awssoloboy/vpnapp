@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">VPN</string>
     <string name="action_settings">Settings</string>
     <string name="home_btn_choose_country">Choose country</string>
     <string name="home_pop_up_title_choose_country">Choose country</string>
@@ -86,4 +87,5 @@
         provided by <b>volunteers around the world</b>.
     </string>
     <string name="note_link">\nYou can provide your own computer as a VPN server to join this experiment.</string>
+    <string name="notification_title">VPN</string>
 </resources>

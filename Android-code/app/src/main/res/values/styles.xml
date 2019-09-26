@@ -50,4 +50,8 @@
         <item name="android:width">250dp</item>
     </style>
 
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_drwable</item>
+    </style>
+
 </resources>

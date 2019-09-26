@@ -36,7 +36,7 @@ public class ICSOpenVPNApplication extends Application {
         super.onCreate();
         PRNGFixes.apply();
 
-        if (BuildConfig.DEBUG) {
+        if (false) {
             //ACRA.init(this);
         }
 

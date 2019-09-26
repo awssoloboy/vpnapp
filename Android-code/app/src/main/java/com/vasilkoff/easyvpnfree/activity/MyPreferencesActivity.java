@@ -5,11 +5,10 @@ import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+import androidx.appcompat.widget.Toolbar;
+
 import com.vasilkoff.easyvpnfree.App;
 import com.vasilkoff.easyvpnfree.R;
 import com.vasilkoff.easyvpnfree.database.DBHelper;
@@ -18,18 +17,13 @@ import com.vasilkoff.easyvpnfree.model.Server;
 import com.vasilkoff.easyvpnfree.util.CountriesNames;
 import com.vasilkoff.easyvpnfree.util.PropertiesService;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.vasilkoff.easyvpnfree.R.id.toolbar;
 
-/**
- * Created by Kusenko on 13.12.2016.
- */
+
 
 public class MyPreferencesActivity extends PreferenceActivity {
     private Toolbar toolbar;
-    Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +39,6 @@ public class MyPreferencesActivity extends PreferenceActivity {
         });
         getFragmentManager().beginTransaction().replace(R.id.preferenceContent, new MyPreferenceFragment()).commit();
         App application = (App) getApplication();
-        mTracker = application.getDefaultTracker();
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment
@@ -82,10 +75,5 @@ public class MyPreferencesActivity extends PreferenceActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mTracker.setScreenName("Preference");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-    }
+
 }

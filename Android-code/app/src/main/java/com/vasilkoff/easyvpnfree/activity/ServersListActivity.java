@@ -54,7 +54,6 @@ public class ServersListActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Server server = serverList.get(position);
-                BaseActivity.sendTouchButton("detailsServer");
                 Intent intent = new Intent(ServersListActivity.this, ServerActivity.class);
                 intent.putExtra(Server.class.getCanonicalName(), server);
                 ServersListActivity.this.startActivity(intent);

@@ -13,8 +13,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.DownloadListener;
 import com.androidnetworking.interfaces.DownloadProgressListener;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.CustomEvent;
+
 import com.daimajia.numberprogressbar.NumberProgressBar;
 
 import com.vasilkoff.easyvpnfree.BuildConfig;
@@ -91,9 +90,6 @@ public class LoaderActivity extends BaseActivity {
                         updateHandler.sendMessageDelayed(end,500);
                     } break;
                     case SWITCH_TO_RESULT: {
-                        if (!BuildConfig.DEBUG)
-                            Answers.getInstance().logCustom(new CustomEvent("Time servers loading")
-                                .putCustomAttribute("Time servers loading", stopwatch.getElapsedTime()));
 
                         if (PropertiesService.getConnectOnStart()) {
                             Server randomServer = getRandomServer();

@@ -170,7 +170,7 @@
                     android:orientation="horizontal"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp">
-                        <android.support.v7.widget.AppCompatCheckBox
+                        <androidx.appcompat.widget.AppCompatCheckBox
                             android:id="@+id/serverBlockingCheck"
                             app:buttonTint="@color/buttonBg"
                             android:text="@string/blocking_ads"

@@ -1,7 +1,7 @@
 package com.vasilkoff.easyvpnfree.util.map;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 
 import com.vasilkoff.easyvpnfree.R;
 import com.vasilkoff.easyvpnfree.util.LoadData;
@@ -17,8 +17,6 @@ import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.overlay.Polygon;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 /**

@@ -14,13 +14,14 @@ import android.net.Uri;
 import android.net.VpnService;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.support.v4.content.ContextCompat;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import android.view.ViewGroup.LayoutParams;
 
 import android.os.Bundle;
 
 
-import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.util.Log;
 
@@ -40,8 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.CustomEvent;
+
 import com.vasilkoff.easyvpnfree.BuildConfig;
 import com.vasilkoff.easyvpnfree.R;
 import com.vasilkoff.easyvpnfree.model.Server;
@@ -151,13 +151,6 @@ public class ServerActivity extends BaseActivity {
 
 
 
-        unblockCheck.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendTouchButton("adsFiltering");
-                launchPurchase(adblockSKU, ADBLOCK_REQUEST);
-            }
-        });
 
         adbBlockCheck.setChecked(defaultFilterAds);
         adbBlockCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -361,7 +354,6 @@ public class ServerActivity extends BaseActivity {
     public void serverOnClick(View view) {
         switch (view.getId()) {
             case R.id.serverConnect:
-                sendTouchButton("serverConnect");
                 if (checkStatus()) {
                     stopVpn();
                 } else {
@@ -369,12 +361,10 @@ public class ServerActivity extends BaseActivity {
                 }
                 break;
             case R.id.serverBtnCheckIp:
-                sendTouchButton("serverBtnCheckIp");
                 Intent browse = new Intent( Intent.ACTION_VIEW , Uri.parse(getString(R.string.url_check_ip)));
                 startActivity(browse);
                 break;
             case R.id.serverBookmark:
-                sendTouchButton("serverBookmark");
 
                 bookmark.startAnimation(AnimationUtils.loadAnimation(this, R.anim.scale));
                 if (dbHelper.checkBookmark(currentServer)) {
@@ -422,20 +412,6 @@ public class ServerActivity extends BaseActivity {
     }
 
     private void prepareStopVPN() {
-        if (!BuildConfig.DEBUG) {
-            try {
-                String download = trafficIn.getText().toString();
-                download = download.substring(download.lastIndexOf(":") + 2);
-
-                Answers.getInstance().logCustom(new CustomEvent("Connection info")
-                        .putCustomAttribute("Country", connectedServer.getCountryLong())
-                        .putCustomAttribute("Download", download)
-                        .putCustomAttribute("Time", stopwatch.getElapsedTime()));
-            } catch (Exception e) {
-
-            }
-        }
-
         statusConnection = false;
         if (waitConnection != null)
             waitConnection.cancel(false);
@@ -465,12 +441,10 @@ public class ServerActivity extends BaseActivity {
         if (intent != null) {
             VpnStatus.updateStateString("USER_VPN_PERMISSION", "", R.string.state_user_vpn_permission,
                     VpnStatus.ConnectionStatus.LEVEL_WAITING_FOR_USER_INPUT);
-            // Start the query
             try {
                 startActivityForResult(intent, START_VPN_PROFILE);
             } catch (ActivityNotFoundException ane) {
-                // Shame on you Sony! At least one user reported that
-                // an official Sony Xperia Arc S image triggers this exception
+
                 VpnStatus.logError(R.string.no_vpn_support_image);
             }
         } else {
@@ -582,7 +556,6 @@ public class ServerActivity extends BaseActivity {
         marketButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendTouchButton("successPopUpBtnPlayMarket");
                 final String appPackageName = getPackageName();
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
@@ -597,14 +570,12 @@ public class ServerActivity extends BaseActivity {
         ((Button)view.findViewById(R.id.successPopUpBtnBrowser)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendTouchButton("successPopUpBtnBrowser");
                 startActivity( new Intent( Intent.ACTION_VIEW, Uri.parse("http://google.com")));
             }
         });
         ((Button)view.findViewById(R.id.successPopUpBtnDesktop)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendTouchButton("successPopUpBtnDesktop");
                 Intent startMain = new Intent(Intent.ACTION_MAIN);
                 startMain.addCategory(Intent.CATEGORY_HOME);
                 startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -614,7 +585,6 @@ public class ServerActivity extends BaseActivity {
         ((Button)view.findViewById(R.id.successPopUpBtnClose)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendTouchButton("successPopUpBtnClose");
                 popupWindow.dismiss();
             }
         });

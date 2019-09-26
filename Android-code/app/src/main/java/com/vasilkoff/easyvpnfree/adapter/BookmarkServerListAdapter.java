@@ -2,13 +2,14 @@ package com.vasilkoff.easyvpnfree.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.vasilkoff.easyvpnfree.R;
 import com.vasilkoff.easyvpnfree.activity.ServerActivity;
@@ -21,9 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Kusenko on 22.01.2017.
- */
+
 
 public class BookmarkServerListAdapter extends RecyclerView.Adapter<BookmarkServerListAdapter.BookmarkHolder>{
 

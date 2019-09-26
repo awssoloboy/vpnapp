@@ -27,7 +27,7 @@
             style="@style/serverName"/>
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <view class="androidx.appcompat.app.AlertController$RecycleListView"
         android:id="@+id/bookmarkRv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

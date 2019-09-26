@@ -2,8 +2,11 @@ package com.vasilkoff.easyvpnfree.activity;
 
 
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.vasilkoff.easyvpnfree.R;
 import com.vasilkoff.easyvpnfree.adapter.BookmarkServerListAdapter;
 import com.vasilkoff.easyvpnfree.model.Server;
@@ -24,7 +27,7 @@ public class BookmarkServerListActivity extends BaseActivity {
         final List<Server> serverList = dbHelper.getBookmarks();
         BookmarkServerListAdapter adapter = new BookmarkServerListAdapter(serverList, this, dbHelper);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.bookmarkRv);
+        RecyclerView recyclerView =findViewById(R.id.bookmarkRv);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(adapter);

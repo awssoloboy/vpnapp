@@ -3,9 +3,7 @@ package com.vasilkoff.easyvpnfree.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Kusenko on 29.09.2016.
- */
+
 
 public class Server implements Parcelable {
 
